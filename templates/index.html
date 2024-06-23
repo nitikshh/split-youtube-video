@@ -1,33 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>YouTube Video Downloader</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Download YouTube Video</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-    <h1>Download YouTube Video</h1>
-    <form action="/download" method="post">
-        <input type="text" name="videoUrl" placeholder="Enter YouTube URL" required>
-        <button type="submit">Download</button>
-    </form>
+  <h1>Download YouTube Video</h1>
+  <form id="video-form">
+    <input type="text" name="url" placeholder="Enter YouTube URL" required>
+    <button type="submit">Download</button>
+  </form>
+  <div id="video-container"></div>
+  
+  <script>
+    $('#video-form').on('submit', function(event) {
+      event.preventDefault();
+      var formData = $(this).serialize();
 
-    <h2>Downloaded Video</h2>
-    <video id="videoPlayer" width="600" controls>
-        <source id="videoSource" src="" type="video/mp4">
-        Your browser does not support the video tag.
-    </video>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            fetch('/latest-video')
-                .then(response => response.json())
-                .then(data => {
-                    if (data.videoPath) {
-                        document.getElementById('videoSource').src = data.videoPath;
-                        document.getElementById('videoPlayer').load();
-                    }
-                });
-        });
-    </script>
+      $.post('/process', formData, function(response) {
+        if (response.success) {
+          $('#video-container').html(`
+            <h2>Downloaded Video:</h2>
+            <video width="640" height="480" controls>
+              <source src="${response.videoPath}" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          `);
+        } else {
+          alert('Failed to download video: ' + response.error);
+        }
+      }).fail(function() {
+        alert('An error occurred while processing your request.');
+      });
+    });
+  </script>
 </body>
 </html>
