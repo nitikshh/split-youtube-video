@@ -3,19 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YouTube Video Downloader</title>
+    <title>YouTube Video Splitter</title>
 </head>
 <body>
-    <h1>Download and Watch YouTube Video</h1>
+    <h1>Download and Split YouTube Video</h1>
     <form action="/process" method="post">
         <label for="video_url">YouTube Video URL:</label>
         <input type="url" id="video_url" name="video_url" required>
-        <button type="submit">Download Video</button>
+        <button type="submit">Download and Split Video</button>
     </form>
-    {% if video_url %}
-        <h2>Downloaded Video:</h2>
+    {% if video1_url and video2_url %}
+        <h2>Downloaded and Split Videos:</h2>
+        <h3>Part 1:</h3>
         <video width="640" height="480" controls>
-            <source src="{{ video_url }}" type="video/mp4">
+            <source src="{{ video1_url }}" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        <h3>Part 2:</h3>
+        <video width="640" height="480" controls>
+            <source src="{{ video2_url }}" type="video/mp4">
             Your browser does not support the video tag.
         </video>
     {% endif %}
