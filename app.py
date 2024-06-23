@@ -3,6 +3,7 @@ from pytube import YouTube
 import random
 import os
 import moviepy.editor as mp
+from PIL import Image
 
 app = Flask(__name__)
 
