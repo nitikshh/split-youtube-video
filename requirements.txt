@@ -1,4 +1,4 @@
-Flask
-Gunicorn
-pytube
-moviepy
+Flask==3.0.3
+Gunicorn==22.0.0
+pytube==15.0.0
+moviepy==1.0.3
