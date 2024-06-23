@@ -23,6 +23,10 @@ def extract_clips(video_path, clip_duration=58, num_clips=10):
     # Randomly select starting points for clips (avoid exceeding video duration)
     start_points = random.sample(range(0, int(video_duration - clip_duration)), num_clips)
 
+    # Ensure the "clips" directory exists
+    if not os.path.exists('clips'):
+        os.makedirs('clips')
+
     for i, start_point in enumerate(start_points):
         clip_name = f"clip_{i+1}.mp4"
         output_clip_path = os.path.join("clips", clip_name)
@@ -65,6 +69,4 @@ def download_file(filename):
 if __name__ == '__main__':
     if not os.path.exists('downloads'):
         os.makedirs('downloads')
-    if not os.path.exists('clips'):
-        os.makedirs('clips')
     app.run(debug=True)
