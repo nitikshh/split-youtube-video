@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify, send_from_directory, render_template
 from pytube import YouTube
 import random
 import os
-import ffmpeg
+from moviepy.editor import VideoFileClip
 
 app = Flask(__name__)
 
@@ -14,8 +14,8 @@ def download_youtube_video(url, download_path="downloads"):
 
 def extract_clips(video_path, clip_duration=58, num_clips=10):
     clip_paths = []
-    video_info = ffmpeg.probe(video_path)
-    video_duration = float(video_info['format']['duration'])
+    video = VideoFileClip(video_path)
+    video_duration = video.duration
 
     # Ensure clip duration doesn't exceed video duration
     clip_duration = min(clip_duration, video_duration)
@@ -31,16 +31,14 @@ def extract_clips(video_path, clip_duration=58, num_clips=10):
         clip_name = f"clip_{i+1}.mp4"
         output_clip_path = os.path.join("clips", clip_name)
 
-        (
-            ffmpeg
-            .input(video_path, ss=start_point, t=clip_duration)
-            .filter('scale', 1080, -1)
-            .output(output_clip_path)
-            .run(overwrite_output=True)
-        )
+        # Extract and save the clip
+        clip = video.subclip(start_point, start_point + clip_duration)
+        clip_resized = clip.resize(width=1080)  # Adjust as needed
+        clip_resized.write_videofile(output_clip_path, codec='libx264', audio_codec='aac')
 
         clip_paths.append(output_clip_path)
-    
+
+    video.close()
     return clip_paths
 
 @app.route('/')
@@ -69,4 +67,6 @@ def download_file(filename):
 if __name__ == '__main__':
     if not os.path.exists('downloads'):
         os.makedirs('downloads')
+    if not os.path.exists('clips'):
+        os.makedirs('clips')
     app.run(debug=True)
