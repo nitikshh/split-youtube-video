@@ -1,25 +1,29 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Video Splitter</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Video Splitter</title>
 </head>
 <body>
-    <h1>Upload a Video to Split</h1>
-    <form action="/process" method="post" enctype="multipart/form-data">
-        <input type="file" name="video" accept="video/*" required>
-        <button type="submit">Upload and Split</button>
+    <h1>Download and Split YouTube Video</h1>
+    <form action="/process" method="post">
+        <label for="video_url">YouTube Video URL:</label>
+        <input type="url" id="video_url" name="video_url" required>
+        <button type="submit">Download and Split Video</button>
     </form>
-    
-    {% if part1_path and part2_path %}
-    <h2>Split Videos</h2>
-    <video width="320" height="240" controls>
-        <source src="{{ url_for('download_file', filename=part1_path.split('/')[-1]) }}" type="video/mp4">
-        Your browser does not support the video tag.
-    </video>
-    <video width="320" height="240" controls>
-        <source src="{{ url_for('download_file', filename=part2_path.split('/')[-1]) }}" type="video/mp4">
-        Your browser does not support the video tag.
-    </video>
+    {% if video1_url and video2_url %}
+        <h2>Downloaded and Split Videos:</h2>
+        <h3>Part 1:</h3>
+        <video width="640" height="480" controls>
+            <source src="{{ video1_url }}" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        <h3>Part 2:</h3>
+        <video width="640" height="480" controls>
+            <source src="{{ video2_url }}" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
     {% endif %}
 </body>
 </html>
