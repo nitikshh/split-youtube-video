@@ -38,7 +38,7 @@
                 clipsDiv.innerHTML = '';
                 data.forEach(clip => {
                     const video = document.createElement('video');
-                    video.src = `/${clip}`;
+                    video.src = `/clips/${clip}`;
                     video.controls = true;
                     clipsDiv.appendChild(video);
                 });
