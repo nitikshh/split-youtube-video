@@ -1,8 +1,8 @@
 from flask import Flask, request, jsonify, send_from_directory, render_template
 from pytube import YouTube
+from moviepy.editor import VideoFileClip, concatenate_videoclips
 import random
 import os
-from moviepy.editor import VideoFileClip
 
 app = Flask(__name__)
 
@@ -12,28 +12,25 @@ def download_youtube_video(url, download_path="downloads"):
     output_path = stream.download(output_path=download_path)
     return output_path
 
-def extract_clips(video_path, clip_duration=58, num_clips=10):
+def extract_clips(video_path, clip_duration=10, num_clips=3):
     clip_paths = []
     video = VideoFileClip(video_path)
-    video_duration = video.duration
 
-    # Ensure clip duration doesn't exceed video duration
+    video_duration = video.duration
     clip_duration = min(clip_duration, video_duration)
 
-    # Randomly select starting points for clips (avoid exceeding video duration)
-    start_points = random.sample(range(0, int(video_duration - clip_duration)), num_clips)
+    start_times = random.sample(range(0, int(video_duration - clip_duration)), num_clips)
 
-    # Ensure the "clips" directory exists
-    if not os.path.exists('clips'):
-        os.makedirs('clips')
+    for i, start_time in enumerate(start_times):
+        end_time = start_time + clip_duration
+        clip = video.subclip(start_time, end_time)
 
-    for i, start_point in enumerate(start_points):
+        # Resize the clip (adjust as needed)
+        clip_resized = clip.resize(width=1080)
+
+        # Save the resized clip
         clip_name = f"clip_{i+1}.mp4"
         output_clip_path = os.path.join("clips", clip_name)
-
-        # Extract and save the clip
-        clip = video.subclip(start_point, start_point + clip_duration)
-        clip_resized = clip.resize(width=1080)  # Adjust as needed
         clip_resized.write_videofile(output_clip_path, codec='libx264', audio_codec='aac')
 
         clip_paths.append(output_clip_path)
