@@ -54,9 +54,11 @@ def process():
     
     # Download the YouTube video
     video_path = download_youtube_video(video_url)
+    clip_paths = []
+    clip_paths.append(video_path)
     
     # Extract clips
-    clip_paths = extract_clips(video_path, clip_duration=duration, num_clips=num_clips)
+    # clip_paths = extract_clips(video_path, clip_duration=duration, num_clips=num_clips)
     
     return jsonify(clip_paths)
 
