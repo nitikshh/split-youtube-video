@@ -12,7 +12,7 @@ def download_youtube_video(url, download_path="downloads"):
     output_path = stream.download(output_path=download_path)
     return output_path
 
-def extract_clips(video_path, clip_duration=10, num_clips=3):
+def extract_clips(video_path, clip_duration=10, num_clips=3, target_width=1080):
     clip_paths = []
     video = VideoFileClip(video_path)
 
@@ -25,8 +25,11 @@ def extract_clips(video_path, clip_duration=10, num_clips=3):
         end_time = start_time + clip_duration
         clip = video.subclip(start_time, end_time)
 
-        # Resize the clip (adjust as needed)
-        clip_resized = clip.resize(width=1080)
+        # Calculate target height based on aspect ratio to maintain proportions
+        target_height = int(target_width * clip.size[1] / clip.size[0])
+
+        # Resize the clip maintaining aspect ratio
+        clip_resized = clip.resize((target_width, target_height))
 
         # Save the resized clip
         clip_name = f"clip_{i+1}.mp4"
